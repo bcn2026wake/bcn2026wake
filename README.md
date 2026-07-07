@@ -111,19 +111,23 @@ ONESIGNAL_APP_ID=xxx ONESIGNAL_REST_API_KEY=xxx \
 
 ## CI/CD — GitHub configuration
 
+Deploys authenticate to AWS via **GitHub OIDC** (role assumption) — no long-lived
+access keys are stored. See [infra/iam/README.md](infra/iam/README.md) to create
+the role.
+
 **Repository → Settings → Secrets and variables → Actions**
 
 Secrets (sensitive):
-`AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_REGION`,
-`GOOGLE_DRIVE_API_KEY`, `GOOGLE_DRIVE_FOLDER_ID`,
+`AWS_ROLE_ARN`, `GOOGLE_DRIVE_API_KEY`, `GOOGLE_DRIVE_FOLDER_ID`,
 `ONESIGNAL_APP_ID`, `ONESIGNAL_REST_API_KEY`.
 
 Variables (non-secret build/deploy config):
-`COGNITO_USER_POOL_ID`, `COGNITO_CLIENT_ID`, `API_BASE_URL`,
+`AWS_REGION`, `COGNITO_USER_POOL_ID`, `COGNITO_CLIENT_ID`, `API_BASE_URL`,
 `S3_BUCKET`, `CLOUDFRONT_DISTRIBUTION_ID`.
 
 `deploy-frontend.yml` runs on push to `main` (build → S3 sync → CloudFront
-invalidate). `deploy-backend.yml` is manual (`workflow_dispatch`).
+invalidate). `deploy-backend.yml` is manual (`workflow_dispatch`). Both request
+`id-token: write` and assume `AWS_ROLE_ARN`.
 
 ## Security notes
 

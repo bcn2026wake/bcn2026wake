@@ -29,8 +29,10 @@ export function initPush(): void {
   window.OneSignalDeferred.push(async (OneSignal) => {
     await OneSignal.init({
       appId: config.oneSignalAppId,
-      // Do not auto-prompt; we ask contextually with our own button.
       autoResubscribe: true,
+      // OneSignal's built-in subscription bell.
+      notifyButton: { enable: true },
+      // Custom scope keeps this worker separate from the Workbox PWA sw.js.
       serviceWorkerParam: { scope: '/onesignal/' },
       serviceWorkerPath: '/onesignal/OneSignalSDKWorker.js',
     });
