@@ -123,11 +123,15 @@ Secrets (sensitive):
 
 Variables (non-secret build/deploy config):
 `AWS_REGION`, `COGNITO_USER_POOL_ID`, `COGNITO_CLIENT_ID`, `API_BASE_URL`,
-`S3_BUCKET`, `CLOUDFRONT_DISTRIBUTION_ID`.
+`S3_BUCKET`, `CLOUDFRONT_DISTRIBUTION_ID`, `SAM_ARTIFACT_BUCKET`.
 
 `deploy-frontend.yml` runs on push to `main` (build → S3 sync → CloudFront
 invalidate). `deploy-backend.yml` is manual (`workflow_dispatch`). Both request
 `id-token: write` and assume `AWS_ROLE_ARN`.
+
+`SAM_ARTIFACT_BUCKET` must be a pre-existing S3 bucket in the same AWS region as
+`AWS_REGION`. The backend workflow uses it instead of SAM's managed bootstrap
+bucket so deploys don't depend on `--resolve-s3` creating `aws-sam-cli-managed-*`.
 
 ## Security notes
 

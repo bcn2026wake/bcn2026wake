@@ -40,7 +40,7 @@ jobs:
         run: |
           sam deploy \
             --stack-name bcn2026-backend \
-            --resolve-s3 \
+            --s3-bucket "${{ vars.SAM_ARTIFACT_BUCKET }}" \
             --capabilities CAPABILITY_IAM \
             --no-confirm-changeset \
             --no-fail-on-empty-changeset \
