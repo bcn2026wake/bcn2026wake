@@ -1,0 +1,70 @@
+{
+  "selectedPersonId": "X0000000T",
+  "camp": {
+    "name": "BCN 2026 Wake",
+    "teams": [
+      { "code": "1", "name": "感恩小组" },
+      { "code": "2", "name": "振盛好帅" }
+    ]
+  },
+  "people": [
+    {
+      "id": "X0000000T",
+      "name": "Alex Rivera",
+      "email": "alex.rivera@example.com",
+      "phone": "+34600111001",
+      "churchName": "BADALONA 堂",
+      "roomNumber": "204",
+      "teamCode": "1",
+      "isLeader": true,
+      "isMaintainer": true
+    },
+    {
+      "id": "X0000000M",
+      "name": "Mei Chen",
+      "email": "mei.chen@example.com",
+      "phone": "+34600111002",
+      "churchName": "BADALONA 堂",
+      "roomNumber": "204",
+      "teamCode": "1",
+      "isLeader": false,
+      "isMaintainer": true
+    },
+    {
+      "id": "X0000005R",
+      "name": "Diego Fernández",
+      "email": "diego.fernandez@example.com",
+      "phone": "+34600111005",
+      "churchName": "东区堂",
+      "roomNumber": "204",
+      "teamCode": "1",
+      "isLeader": false,
+      "isMaintainer": false
+    },
+    {
+      "id": "X0000003C",
+      "name": "Carlos Gómez",
+      "email": "carlos.gomez@example.com",
+      "phone": "+34600111003",
+      "churchName": "东区堂",
+      "roomNumber": "311",
+      "teamCode": "2",
+      "isLeader": true,
+      "isMaintainer": false
+    },
+    {
+      "id": "X0000004P",
+      "name": "Priya Patel",
+      "email": "priya.patel@example.com",
+      "phone": "+34600111004",
+      "churchName": "东区堂",
+      "roomNumber": "311",
+      "teamCode": "2",
+      "isLeader": false,
+      "isMaintainer": false
+    }
+  ],
+  "gallery": {
+    "albums": ["Opening Day", "Workshops", "Evening Social"]
+  }
+}

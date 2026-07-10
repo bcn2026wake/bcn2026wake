@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import LanguageSelector from '../components/LanguageSelector';
 import { useAuth } from '../context/AuthContext';
-import { config } from '../config';
+import { config, isDemoMode } from '../config';
 import {
   AuthError,
   getLoginChannels,
@@ -40,7 +40,7 @@ export default function Login() {
   const handleContinue = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!id.trim()) return;
-    if (config.demoMode) {
+    if (isDemoMode()) {
       setChannels({
         email: { available: true, hint: 'a***@gmail.com' },
         sms: { available: true, hint: '•••••••01' },
@@ -64,7 +64,7 @@ export default function Login() {
   const sendOtp = async (ch: OtpChannel) => {
     if (cooldown > 0) return;
     setChannel(ch);
-    if (config.demoMode) {
+    if (isDemoMode()) {
       setCooldown(30);
       setStep('otp');
       return;
@@ -90,7 +90,7 @@ export default function Login() {
 
   const handleVerify = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (config.demoMode) return enterDemo();
+    if (isDemoMode()) return enterDemo();
     setBusy(true);
     setError(null);
     try {
@@ -119,98 +119,98 @@ export default function Login() {
 
       <div className="login-card">
         {step === 'id' && (
-        <form onSubmit={handleContinue}>
-          <div className="field">
-            <label htmlFor="id">{t('login.idLabel')}</label>
-            <input
-              id="id"
-              autoComplete="username"
-              inputMode="text"
-              placeholder={t('login.idPlaceholder')}
-              value={id}
-              onChange={(e) => setId(e.target.value)}
-            />
-          </div>
-          <p className="hint-text">{t('login.firstTimeHint')}</p>
-          {error && <p className="error-text">{errText(error) ?? t('login.genericError')}</p>}
-          <button className="btn" disabled={busy || !id.trim()}>
-            {busy ? t('common.loading') : t('login.continue')}
-          </button>
-          {config.enableTestLoginButton && (
-            <button type="button" className="btn ghost" onClick={enterDemo}>
-              Enter demo
+          <form onSubmit={handleContinue}>
+            <div className="field">
+              <label htmlFor="id">{t('login.idLabel')}</label>
+              <input
+                id="id"
+                autoComplete="username"
+                inputMode="text"
+                placeholder={t('login.idPlaceholder')}
+                value={id}
+                onChange={(e) => setId(e.target.value)}
+              />
+            </div>
+            <p className="hint-text">{t('login.firstTimeHint')}</p>
+            {error && <p className="error-text">{errText(error) ?? t('login.genericError')}</p>}
+            <button className="btn" disabled={busy || !id.trim()}>
+              {busy ? t('common.loading') : t('login.continue')}
             </button>
-          )}
-        </form>
-      )}
-
-      {step === 'choose' && channels && (
-        <div>
-          <p className="hint-text">{t('login.chooseChannel')}</p>
-          <div className="channel-list">
-            {(['email', 'sms'] as OtpChannel[]).map((ch) =>
-              channels[ch].available ? (
-                <button
-                  key={ch}
-                  type="button"
-                  className="channel-option"
-                  disabled={busy}
-                  onClick={() => sendOtp(ch)}
-                >
-                  <span className="channel-icon" aria-hidden="true">
-                    {ch === 'email' ? '✉' : '📱'}
-                  </span>
-                  <span className="channel-text">
-                    <strong>{ch === 'email' ? t('login.channelEmail') : t('login.channelSms')}</strong>
-                    {channels[ch].hint && <small>{channels[ch].hint}</small>}
-                  </span>
-                  <span className="channel-chevron" aria-hidden="true">
-                    ›
-                  </span>
-                </button>
-              ) : null,
+            {config.enableTestLoginButton && (
+              <button type="button" className="btn ghost" onClick={enterDemo}>
+                Enter demo
+              </button>
             )}
-          </div>
-          {error && <p className="error-text">{errText(error) ?? t('login.genericError')}</p>}
-          <button type="button" className="btn ghost" onClick={() => setStep('id')}>
-            ←
-          </button>
-        </div>
-      )}
+          </form>
+        )}
 
-      {step === 'otp' && (
-        <form onSubmit={handleVerify}>
-          <p className="hint-text">
-            {channel === 'email' ? t('login.otpSentEmail') : t('login.otpSentSms')}
-            {channels?.[channel]?.hint ? ` ${channels[channel].hint}` : ''}
-          </p>
-          <div className="field">
-            <label htmlFor="otp">{t('login.otpLabel')}</label>
-            <input
-              id="otp"
-              inputMode="numeric"
-              autoComplete="one-time-code"
-              placeholder={t('login.otpPlaceholder')}
-              value={code}
-              onChange={(e) => setCode(e.target.value)}
-            />
+        {step === 'choose' && channels && (
+          <div>
+            <p className="hint-text">{t('login.chooseChannel')}</p>
+            <div className="channel-list">
+              {(['email', 'sms'] as OtpChannel[]).map((ch) =>
+                channels[ch].available ? (
+                  <button
+                    key={ch}
+                    type="button"
+                    className="channel-option"
+                    disabled={busy}
+                    onClick={() => sendOtp(ch)}
+                  >
+                    <span className="channel-icon" aria-hidden="true">
+                      {ch === 'email' ? '✉' : '📱'}
+                    </span>
+                    <span className="channel-text">
+                      <strong>{ch === 'email' ? t('login.channelEmail') : t('login.channelSms')}</strong>
+                      {channels[ch].hint && <small>{channels[ch].hint}</small>}
+                    </span>
+                    <span className="channel-chevron" aria-hidden="true">
+                      ›
+                    </span>
+                  </button>
+                ) : null,
+              )}
+            </div>
+            {error && <p className="error-text">{errText(error) ?? t('login.genericError')}</p>}
+            <button type="button" className="btn ghost" onClick={() => setStep('id')}>
+              ←
+            </button>
           </div>
-          {error && <p className="error-text">{errText(error) ?? t('login.genericError')}</p>}
-          <button className="btn" disabled={busy || code.trim().length < 6}>
-            {busy ? t('common.loading') : t('login.verifyLogin')}
-          </button>
-          <button
-            type="button"
-            className="btn ghost"
-            onClick={() => sendOtp(channel)}
-            disabled={busy || cooldown > 0}
-          >
-            {cooldown > 0
-              ? t('login.resendIn', { seconds: cooldown })
-              : t('login.resendCode')}
-          </button>
-        </form>
-      )}
+        )}
+
+        {step === 'otp' && (
+          <form onSubmit={handleVerify}>
+            <p className="hint-text">
+              {channel === 'email' ? t('login.otpSentEmail') : t('login.otpSentSms')}
+              {channels?.[channel]?.hint ? ` ${channels[channel].hint}` : ''}
+            </p>
+            <div className="field">
+              <label htmlFor="otp">{t('login.otpLabel')}</label>
+              <input
+                id="otp"
+                inputMode="numeric"
+                autoComplete="one-time-code"
+                placeholder={t('login.otpPlaceholder')}
+                value={code}
+                onChange={(e) => setCode(e.target.value)}
+              />
+            </div>
+            {error && <p className="error-text">{errText(error) ?? t('login.genericError')}</p>}
+            <button className="btn" disabled={busy || code.trim().length < 6}>
+              {busy ? t('common.loading') : t('login.verifyLogin')}
+            </button>
+            <button
+              type="button"
+              className="btn ghost"
+              onClick={() => sendOtp(channel)}
+              disabled={busy || cooldown > 0}
+            >
+              {cooldown > 0
+                ? t('login.resendIn', { seconds: cooldown })
+                : t('login.resendCode')}
+            </button>
+          </form>
+        )}
       </div>
     </div>
   );

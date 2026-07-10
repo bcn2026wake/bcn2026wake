@@ -9,6 +9,10 @@ on:
         description: Verified SES sender address for OTP emails
         required: true
 
+concurrency:
+  group: deploy-backend
+  cancel-in-progress: false
+
 jobs:
   deploy:
     runs-on: ubuntu-latest

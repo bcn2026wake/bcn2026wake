@@ -1,10 +1,27 @@
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../context/AuthContext';
+import { buildNameMap, fetchContactsDirectory } from '../../services/contacts';
 
 export default function ProfileTab() {
   const { t } = useTranslation();
   const { profile } = useAuth();
+  const [names, setNames] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    if (!profile) return;
+    let active = true;
+    fetchContactsDirectory(profile)
+      .then((dir) => active && setNames(buildNameMap(dir)))
+      .catch(() => {});
+    return () => {
+      active = false;
+    };
+  }, [profile]);
+
   if (!profile) return null;
+
+  const nameOf = (id: string) => names[id] ?? id;
 
   return (
     <section role="tabpanel">
@@ -72,13 +89,13 @@ export default function ProfileTab() {
           {profile.leadersId.length > 0 && (
             <div className="row">
               <span className="label">{t('profile.leaders')}</span>
-              <span className="value">{profile.leadersId.join(', ')}</span>
+              <span className="value">{profile.leadersId.map(nameOf).join(', ')}</span>
             </div>
           )}
           {profile.roommatesId.length > 0 && (
             <div className="row">
               <span className="label">{t('profile.roommates')}</span>
-              <span className="value">{profile.roommatesId.join(', ')}</span>
+              <span className="value">{profile.roommatesId.map(nameOf).join(', ')}</span>
             </div>
           )}
         </div>

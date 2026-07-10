@@ -85,14 +85,13 @@
   },
   "contacts": {
     "title": "紧急联系人",
+    "heading": "联系人",
     "call": "拨打",
     "empty": "暂无联系人。",
     "loadError": "无法加载联系人。",
     "items": {
       "c1": { "name": "活动控制室", "role": "综合协助" },
       "c2": { "name": "医疗 / 急救", "role": "现场医护" },
-      "c3": { "name": "安保台", "role": "24 小时安保" },
-      "c4": { "name": "交通协调员", "role": "班车与出租车" },
       "c5": { "name": "当地紧急服务", "role": "警察 / 救护车" }
     },
     "directory": {
@@ -100,6 +99,7 @@
       "leaders": "你的领队",
       "group": "你的团队",
       "maintainers": "后勤人员",
+      "roommates": "你的室友",
       "empty": "暂无联系人。"
     },
     "tags": {

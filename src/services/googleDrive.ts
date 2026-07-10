@@ -1,4 +1,5 @@
-import { config } from '../config';
+import { config, isDemoMode } from '../config';
+import { demoAlbums, demoGalleryImages } from '../demo';
 import type { GalleryImage, GalleryAlbum } from '../types';
 
 interface DriveFile {
@@ -47,12 +48,8 @@ async function listFiles(query: string, extraFields = ''): Promise<DriveFile[]> 
  * (one lightweight call each) for a nicer preview.
  */
 export async function fetchAlbums(): Promise<GalleryAlbum[]> {
-  if (config.demoMode) {
-    return ['Opening Day', 'Workshops', 'Evening Social'].map((name, i) => ({
-      id: `album-${i}`,
-      name,
-      coverUrl: `https://picsum.photos/seed/album${i}/600/450`,
-    }));
+  if (isDemoMode()) {
+    return demoAlbums();
   }
 
   const folders = await listFiles(
@@ -85,18 +82,8 @@ export async function fetchAlbums(): Promise<GalleryAlbum[]> {
 export async function fetchGalleryImages(folderId?: string): Promise<GalleryImage[]> {
   const target = folderId ?? config.googleDrive.folderId;
 
-  if (config.demoMode) {
-    const seed = target.replace(/\D/g, '') || '0';
-    return Array.from({ length: 9 }, (_, i) => {
-      const s = `${seed}${i}`;
-      return {
-        id: `demo-${s}`,
-        name: `Photo ${i + 1}`,
-        thumbnailUrl: `https://picsum.photos/seed/g${s}/400/400`,
-        fullUrl: `https://picsum.photos/seed/g${s}/1600/1600`,
-        webViewLink: `https://picsum.photos/seed/g${s}/1600/1600`,
-      };
-    });
+  if (isDemoMode()) {
+    return demoGalleryImages(target);
   }
 
   const files = await listFiles(

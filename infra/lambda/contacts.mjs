@@ -32,12 +32,16 @@ export async function handler(event) {
     isLeader: claims['custom:is_leader'] === 'true',
     isMaintainer: claims['custom:is_maintainer'] === 'true',
     leadersId: parseList(claims['custom:leaders_id']),
+    roommatesId: parseList(claims['custom:roommates_id']),
   };
 
   try {
-    if (me.isMaintainer) return json(200, await maintainerView());
-    if (me.isLeader) return json(200, await leaderView(me));
-    return json(200, await memberView(me));
+    const roommates = await fetchPeople(me.roommatesId, me.id);
+    let view;
+    if (me.isMaintainer) view = await maintainerView();
+    else if (me.isLeader) view = await leaderView(me);
+    else view = await memberView(me);
+    return json(200, { ...view, roommates });
   } catch (err) {
     console.error(err);
     return json(500, { message: 'Server error' });
@@ -84,6 +88,18 @@ async function memberView(me) {
   );
   const people = (res.Responses?.[ATTENDEES_TABLE] || []).map(toPerson).sort(byName);
   return { role: 'member', people };
+}
+
+/** Batch-loads a set of attendee ids into public person shapes (excludes self). */
+async function fetchPeople(ids, selfId) {
+  const keys = [...new Set(ids)].filter((id) => id && id !== selfId);
+  if (keys.length === 0) return [];
+  const res = await ddb.send(
+    new BatchGetCommand({
+      RequestItems: { [ATTENDEES_TABLE]: { Keys: keys.map((id) => ({ id })) } },
+    }),
+  );
+  return (res.Responses?.[ATTENDEES_TABLE] || []).map(toPerson).sort(byName);
 }
 
 /** Leaders see every member of their own group (excluding themselves). */

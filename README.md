@@ -1,153 +1,152 @@
 # BCN 2026 Wake — Event Companion PWA
 
-A disposable, mobile-first **Progressive Web App** for a 1-week private event with
-400–500 pre-registered attendees. Built to run entirely on AWS + third-party free
-tiers (**$0 base cost**) and to be torn down after the event.
+A disposable, mobile-first Progressive Web App for a one-week private event with
+~400–500 pre-registered attendees. Built to run on AWS + third-party free tiers
+and to be torn down after the event.
 
-## Why this stack
+- **Frontend:** React 18 + TypeScript + Vite, installable PWA (`vite-plugin-pwa`).
+- **Auth:** AWS Cognito, **passwordless OTP** (email / SMS) via a `CUSTOM_AUTH` flow.
+- **Data:** DynamoDB (attendee roster + OTP store), Lambda + API Gateway (SAM).
+- **Extras:** Google Drive gallery, OneSignal web push, i18n (EN / ES / ZH).
 
-| Concern | Choice | Free-tier fit |
-|---|---|---|
-| UI | React 18 + TypeScript + Vite | — |
-| App shell / push | `vite-plugin-pwa` + OneSignal Web SDK v16 | iOS "Add to Home Screen", $0 |
-| Auth | AWS Cognito User Pool (`amazon-cognito-identity-js`) | 50k MAU free |
-| Serverless API | AWS Lambda + API Gateway (SAM) | 1M req/mo free |
-| OTP store | DynamoDB (TTL) | 25 GB free |
-| OTP delivery | SES (email) / SNS (SMS) | free/near-free at this volume |
-| Photos | Google Drive API v3 (client-side key) | free |
-| Hosting | S3 + CloudFront | free tier |
-| CI/CD | GitHub Actions | free |
+---
 
-## Features (mapped to requirements)
+## Quick start (local, no AWS needed)
 
-- **Strict auth**: no public sign-up. Attendees are bulk pre-provisioned. First
-  login is ID-only → OTP to registered email/SMS → set a permanent password.
-  Returning logins use ID + password (Cognito JWT).
-- **Locked mobile layout**: sticky header (Team info + language selector),
-  scrollable body, sticky bottom tab bar (4 tabs).
-- **Tabs**: Profile (registry data + custom links), Real-time Schedule (live
-  "NOW" marker driven by device clock), Gallery (Google Drive grid), Emergency
-  Contacts (`tel:` click-to-call).
-- **i18n**: English / Spanish / Chinese (Simplified) — instant switch, state
-  preserved, available on login **and** dashboard.
-- **Push (optional)**: OneSignal web push + PWA manifest/service worker for iOS.
+The app ships with a **demo mode** that mocks auth, contacts, and the gallery, so
+you can run and develop the whole UI without any backend or credentials.
 
-## Project layout
+```bash
+nvm use 24            # Node 24.x
+npm install
+npm run dev           # http://localhost:5173
+```
+
+On the login screen click **“Enter demo”** to load a mock attendee and explore
+every tab. To force demo mode for the entire session (skips the button), set
+`VITE_DEMO_MODE=true` in `.env`.
+
+### Scripts
+
+| Command | Purpose |
+|---|---|
+| `npm run dev` | Vite dev server with HMR |
+| `npm run build` | Type-check (`tsc -b`) + production bundle → `dist/` |
+| `npm run preview` | Serve the built `dist/` locally |
+
+---
+
+## Running against a real backend
+
+Copy the example env file and fill in values from your deployed stack, then run
+`npm run dev` as above.
+
+```bash
+cp .env.example .env
+```
+
+| Env var | What it is |
+|---|---|
+| `VITE_AWS_REGION` | Cognito region (e.g. `eu-west-3`) |
+| `VITE_COGNITO_USER_POOL_ID` | Cognito User Pool ID |
+| `VITE_COGNITO_CLIENT_ID` | Cognito App Client ID |
+| `VITE_API_BASE_URL` | API Gateway base URL (`.../prod`) |
+| `VITE_GOOGLE_DRIVE_API_KEY` | Browser-restricted, read-only Drive key |
+| `VITE_GOOGLE_DRIVE_FOLDER_ID` | Public parent folder (albums = subfolders) |
+| `VITE_ONESIGNAL_APP_ID` | OneSignal Web app ID (optional) |
+| `VITE_DEMO_MODE` | `true` to force demo mode |
+| `VITE_ENABLE_TEST_LOGIN_BUTTON` | `false` to hide the “Enter demo” button |
+
+Only non-secret, public values are ever exposed to the client bundle (`VITE_*`).
+
+---
+
+## How login works
+
+There are **no passwords**. Every login is passwordless OTP:
+
+1. Enter attendee ID → `GET /login/channels` returns which channels (email / SMS)
+   are available, with masked hints. A 404 means the ID is not on the roster.
+2. Pick a channel → Cognito `CUSTOM_AUTH` starts and the `CreateAuthChallenge`
+   Lambda sends a 6-digit code (rate-limited with a cooldown).
+3. Enter the code → Cognito issues JWTs; the profile is read from the ID-token
+   claims populated at seed time.
+
+---
+
+## Project structure
 
 ```
-index.html                 PWA entry (+ OneSignal SDK, iOS meta)
+index.html                 PWA entry (OneSignal SDK, iOS meta tags)
 vite.config.ts             PWA manifest + Workbox runtime caching
 src/
-  config.ts                Runtime config from VITE_* env vars
-  i18n/                     react-i18next setup + en/es/zh-CN locales
+  config.ts                Runtime config + demo-mode toggle (VITE_* env)
+  types.ts                 Shared domain types
+  main.tsx / App.tsx       Bootstrap + auth-gated routing (Login | Dashboard)
+  context/AuthContext.tsx  Session state, profile from JWT, demo profile
+  pages/                   Login (id → channel → OTP), Dashboard (tab shell)
+  components/
+    Header, BottomNav, LanguageSelector, PushBanner, Lightbox
+    tabs/                  Profile, Schedule (live "NOW"), Gallery, Contacts
   services/
-    auth.ts                Cognito login + first-login OTP client
-    googleDrive.ts         Drive API v3 gallery fetch
-    push.ts                OneSignal init / identify
-  context/AuthContext.tsx  Session state + profile from JWT claims
-  components/              Header, BottomNav, LanguageSelector, PushBanner, tabs/
-  pages/                   Login (id → password | otp), Dashboard
+    auth.ts                Cognito passwordless OTP client
+    contacts.ts            Role-based directory (GET /contacts) + demo data
+    googleDrive.ts         Drive API v3 albums + images
+    push.ts                OneSignal init / identify / permission
   data/eventData.ts        Static schedule + emergency contacts (edit + redeploy)
+  i18n/                    react-i18next setup + en/es/zh locales
 infra/
   template.yaml            SAM: Cognito, DynamoDB, Lambda API
-  lambda/                  firstLoginStatus | Start | Complete (OTP flow)
-  seed/                    seedUsers.mjs (roster → Cognito), broadcast.mjs
+  lambda/                  loginChannels, {define,create,verify}AuthChallenge,
+                           contacts, util (CUSTOM_AUTH triggers + REST handlers)
+  seed/                    seedUsers.mjs (roster → Cognito + DynamoDB),
+                           broadcast.mjs (OneSignal push), roster.csv
 .github/workflows/         deploy-frontend.yml, deploy-backend.yml
 ```
 
-## Setup
+---
 
-### 1. Backend (once)
+## Backend & seed (deploy)
 
-Requires a verified SES sender address for OTP emails.
+Deploying is only needed to test against real Cognito/DynamoDB — day-to-day UI
+work uses demo mode. The project region is `eu-west-3`.
 
 ```bash
+# 1. Deploy the stack (needs a verified SES sender for OTP emails)
 cd infra
 sam build
 sam deploy --guided \
   --stack-name bcn2026-backend \
   --capabilities CAPABILITY_IAM \
   --parameter-overrides SesFromAddress="no-reply@yourdomain.com"
-```
 
-Note the stack outputs: `UserPoolId`, `UserPoolClientId`, `ApiBaseUrl`.
-
-### 2. Pre-provision attendees
-
-Edit `infra/seed/roster.csv` (`id,name,email,phone,team_name,links`), then:
-
-```bash
-cd infra/seed
+# 2. Pre-provision attendees (idempotent — safe to re-run)
+cd seed
 npm install
-AWS_REGION=us-east-1 COGNITO_USER_POOL_ID=us-east-1_XXXX npm run seed
-```
+AWS_REGION=eu-west-3 \
+COGNITO_USER_POOL_ID=eu-west-3_XXXX \
+ATTENDEES_TABLE=bcn2026-attendees \
+  npm run seed
 
-Idempotent — safe to re-run when the roster changes.
-
-### 3. Frontend
-
-```bash
-cp .env.example .env          # fill in the values from step 1 + integrations
-npm install
-npm run dev                   # local dev
-npm run build                 # production bundle → dist/
-```
-
-### 4. Google Drive gallery
-
-- Make the folder **"Anyone with the link — Viewer"**.
-- Create a **browser-restricted** API key (HTTP referrer = your CloudFront domain,
-  Drive API enabled). Put the key + folder ID in the env vars.
-
-### 5. Push (optional)
-
-Create a OneSignal app (Web), set the site URL to your CloudFront domain, and put
-`VITE_ONESIGNAL_APP_ID` in the env. Broadcast manually:
-
-```bash
+# 3. Broadcast a push (optional)
 ONESIGNAL_APP_ID=xxx ONESIGNAL_REST_API_KEY=xxx \
-  node infra/seed/broadcast.mjs "Keynote in 10 min" "Auditorium A"
+  npm run broadcast -- "Keynote in 10 min" "Auditorium A"
 ```
 
-## CI/CD — GitHub configuration
+Edit the roster in `infra/seed/roster.csv`
+(`id,name,email,phone,church_name,team_code,team_name,room_number,leaders_id,roommates_id,is_leader,is_maintainer`).
 
-Deploys authenticate to AWS via **GitHub OIDC** (role assumption) — no long-lived
-access keys are stored. See [infra/iam/README.md](infra/iam/README.md) to create
-the role.
+CI/CD lives in `.github/workflows/`: `deploy-frontend.yml` runs on push to `main`
+(build → S3 → CloudFront invalidate); `deploy-backend.yml` is manual. Both use
+GitHub OIDC (no long-lived AWS keys) — see the workflow files for the required
+repository secrets and variables.
 
-**Repository → Settings → Secrets and variables → Actions**
+---
 
-Secrets (sensitive):
-`AWS_ROLE_ARN`, `GOOGLE_DRIVE_API_KEY`, `GOOGLE_DRIVE_FOLDER_ID`,
-`ONESIGNAL_APP_ID`, `ONESIGNAL_REST_API_KEY`.
+## Notes
 
-Variables (non-secret build/deploy config):
-`AWS_REGION`, `COGNITO_USER_POOL_ID`, `COGNITO_CLIENT_ID`, `API_BASE_URL`,
-`S3_BUCKET`, `CLOUDFRONT_DISTRIBUTION_ID`, `SAM_ARTIFACT_BUCKET`.
-
-`deploy-frontend.yml` runs on push to `main` (build → S3 sync → CloudFront
-invalidate). `deploy-backend.yml` is manual (`workflow_dispatch`). Both request
-`id-token: write` and assume `AWS_ROLE_ARN`.
-
-`SAM_ARTIFACT_BUCKET` must be a pre-existing S3 bucket in the same AWS region as
-`AWS_REGION`. The backend workflow uses it instead of SAM's managed bootstrap
-bucket so deploys don't depend on `--resolve-s3` creating `aws-sam-cli-managed-*`.
-
-## Security notes
-
-- No public registration; Cognito pool has `AllowAdminCreateUserOnly: true`.
-- OTPs are stored **hashed** (SHA-256) with a DynamoDB TTL, verified in constant
-  time, and rate-limited (5 attempts).
-- The Google Drive key is browser-restricted and read-only.
-- Only non-secret values are exposed to the client bundle (`VITE_*`).
-
-## Teardown (after the event)
-
-```bash
-aws cloudformation delete-stack --stack-name bcn2026-backend
-# remove the S3 bucket + CloudFront distribution, disable the OneSignal app.
-```
-
-## Icons
-
-Add binary PWA icons before deploying — see [public/ICONS_README.md](public/ICONS_README.md).
+- Add binary PWA icons before deploying — see [public/ICONS_README.md](public/ICONS_README.md).
+- OTPs are stored hashed (SHA-256) with a DynamoDB TTL and verified in constant
+  time; the Google Drive key is browser-restricted and read-only.
+- Teardown after the event: `aws cloudformation delete-stack --stack-name bcn2026-backend`,
+  then remove the S3 bucket + CloudFront distribution and disable the OneSignal app.

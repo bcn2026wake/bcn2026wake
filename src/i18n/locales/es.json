@@ -85,14 +85,13 @@
   },
   "contacts": {
     "title": "Contactos de emergencia",
+    "heading": "Contactos",
     "call": "Llamar",
     "empty": "No hay contactos disponibles.",
     "loadError": "No se pudieron cargar los contactos.",
     "items": {
       "c1": { "name": "Sala de control del evento", "role": "Asistencia general" },
       "c2": { "name": "Médico / Primeros auxilios", "role": "Médico en el lugar" },
-      "c3": { "name": "Mostrador de seguridad", "role": "Seguridad 24/7" },
-      "c4": { "name": "Coordinador de transporte", "role": "Autobuses y taxis" },
       "c5": { "name": "Servicios de emergencia locales", "role": "Policía / Ambulancia" }
     },
     "directory": {
@@ -100,6 +99,7 @@
       "leaders": "Tus líderes",
       "group": "Tu equipo",
       "maintainers": "Encargados",
+      "roommates": "Tus compañeros de habitación",
       "empty": "Aún no hay contactos."
     },
     "tags": {

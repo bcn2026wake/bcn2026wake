@@ -21,3 +21,13 @@ export const config = {
   // Temporary escape hatch: defaults to enabled unless explicitly set to false.
   enableTestLoginButton: import.meta.env.VITE_ENABLE_TEST_LOGIN_BUTTON !== 'false',
 } as const;
+
+let runtimeDemo = config.demoMode;
+
+export function isDemoMode(): boolean {
+  return runtimeDemo;
+}
+
+export function enableDemoMode(): void {
+  runtimeDemo = true;
+}

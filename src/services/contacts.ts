@@ -1,12 +1,13 @@
-import { config } from '../config';
+import { config, isDemoMode } from '../config';
 import { getCurrentIdToken } from './auth';
-import type { ContactsDirectory, UserProfile } from '../types';
+import { demoDirectory } from '../demo';
+import type { ContactsDirectory, DirectoryPerson, UserProfile } from '../types';
 
 
 export async function fetchContactsDirectory(
   profile: UserProfile,
 ): Promise<ContactsDirectory> {
-  if (config.demoMode) return demoDirectory(profile);
+  if (isDemoMode()) return demoDirectory(profile);
 
   const token = await getCurrentIdToken();
   if (!token) throw new Error('Not authenticated');
@@ -18,48 +19,15 @@ export async function fetchContactsDirectory(
   return res.json();
 }
 
-/** Offline preview data mirroring the shape the API returns for each role. */
-function demoDirectory(profile: UserProfile): ContactsDirectory {
-  if (profile.isMaintainer) {
-    return {
-      role: 'maintainer',
-      groups: [
-        {
-          teamCode: 'AUR',
-          teamName: 'Team Aurora',
-          members: [
-            { id: 'X0000000T', name: 'Alex Rivera', phone: '+34600111001', roomNumber: '204' },
-            { id: 'X0000000M', name: 'Mei Chen', phone: '+34600111002', roomNumber: '204', isMaintainer: true },
-          ],
-        },
-        {
-          teamCode: 'NEB',
-          teamName: 'Team Nebula',
-          members: [
-            { id: 'X0000003C', name: 'Carlos Gómez', phone: '+34600111003', roomNumber: '311', isLeader: true },
-            { id: 'X0000004P', name: 'Priya Patel', phone: '+34600111004', roomNumber: '311' },
-          ],
-        },
-      ],
-      maintainers: [
-        { id: 'X0000000M', name: 'Mei Chen', phone: '+34600111002', teamCode: 'AUR', teamName: 'Team Aurora' },
-      ],
-    };
-  }
-
-  if (profile.isLeader) {
-    return {
-      role: 'leader',
-      people: [
-        { id: 'X0000004P', name: 'Priya Patel', phone: '+34600111004', roomNumber: '311' },
-      ],
-    };
-  }
-
-  return {
-    role: 'member',
-    people: [
-      { id: 'X0000003C', name: 'Carlos Gómez', phone: '+34600111003', roomNumber: '311', isLeader: true },
-    ],
+/** Flattens every person in the directory into an id → name lookup. */
+export function buildNameMap(directory: ContactsDirectory): Record<string, string> {
+  const map: Record<string, string> = {};
+  const add = (p: DirectoryPerson) => {
+    map[p.id] = p.name;
   };
+  directory.people?.forEach(add);
+  directory.groups?.forEach((g) => g.members.forEach(add));
+  directory.maintainers?.forEach(add);
+  directory.roommates?.forEach(add);
+  return map;
 }

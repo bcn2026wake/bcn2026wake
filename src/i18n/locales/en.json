@@ -85,14 +85,13 @@
   },
   "contacts": {
     "title": "Emergency contacts",
+    "heading": "Contacts",
     "call": "Call",
     "empty": "No contacts available.",
     "loadError": "Could not load contacts.",
     "items": {
       "c1": { "name": "Event Control Room", "role": "General assistance" },
       "c2": { "name": "Medical / First Aid", "role": "On-site medic" },
-      "c3": { "name": "Security Desk", "role": "24/7 security" },
-      "c4": { "name": "Transport Coordinator", "role": "Shuttles & taxis" },
       "c5": { "name": "Local Emergency Services", "role": "Police / Ambulance" }
     },
     "directory": {
@@ -100,6 +99,7 @@
       "leaders": "Your leaders",
       "group": "Your group",
       "maintainers": "Maintainers",
+      "roommates": "Your roommates",
       "empty": "No contacts yet."
     },
     "tags": {

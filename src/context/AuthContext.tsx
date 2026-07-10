@@ -13,6 +13,8 @@ import {
   signOut as svcSignOut,
 } from '../services/auth';
 import { identifyPushUser, logoutPush } from '../services/push';
+import { enableDemoMode } from '../config';
+import { DEMO_PROFILE } from '../demo';
 import type { UserProfile } from '../types';
 
 interface AuthContextValue {
@@ -22,21 +24,6 @@ interface AuthContextValue {
   enterDemo: () => void;
   signOut: () => void;
 }
-
-const DEMO_PROFILE: UserProfile = {
-  id: 'BCN-001',
-  name: 'Alex Rivera',
-  email: 'alex.rivera@example.com',
-  phone: '+34600111001',
-  churchName: 'Grace Barcelona',
-  teamCode: 'AUR',
-  teamName: 'Team Aurora',
-  roomNumber: '204',
-  leadersId: ['BCN-003'],
-  roommatesId: ['BCN-002'],
-  isLeader: false,
-  isMaintainer: true,
-};
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
@@ -63,7 +50,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       profile,
       loading,
       setSession: (session) => applySession(session),
-      enterDemo: () => setProfile(DEMO_PROFILE),
+      enterDemo: () => {
+        enableDemoMode();
+        setProfile(DEMO_PROFILE);
+      },
       signOut: () => {
         svcSignOut();
         logoutPush();

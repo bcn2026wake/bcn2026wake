@@ -172,7 +172,7 @@ export function profileFromSession(session: CognitoUserSession): UserProfile {
   };
 }
 
-export function getIdToken(session: CognitoUserSession): string {
+function getIdToken(session: CognitoUserSession): string {
   return session.getIdToken().getJwtToken();
 }
 

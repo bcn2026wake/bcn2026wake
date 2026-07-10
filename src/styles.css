@@ -159,6 +159,45 @@ a {
   margin: 18px 0 8px;
 }
 
+/* ---- Collapsible team group ---- */
+.collapse-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+}
+
+.collapse-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 18px 0 8px;
+}
+
+.collapse-count {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted, #6b7280);
+  background: rgba(107, 114, 128, 0.12);
+  border-radius: 999px;
+  padding: 1px 8px;
+}
+
+.collapse-chevron {
+  font-size: 20px;
+  color: var(--muted, #6b7280);
+  transition: transform 0.15s ease;
+}
+
+.collapse-chevron.open {
+  transform: rotate(90deg);
+}
+
 /* ---- Bottom nav ---- */
 .bottom-nav {
   position: fixed;

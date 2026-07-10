@@ -66,6 +66,8 @@ export interface ContactsDirectory {
   groups?: DirectoryGroup[];
   /** maintainer → the maintainer roster, each tagged with its group. */
   maintainers?: DirectoryPerson[];
+  /** everyone → the caller's room-mates (from roommates_id). */
+  roommates?: DirectoryPerson[];
 }
 
 export interface GalleryImage {

@@ -38,22 +38,20 @@ export const SCHEDULE: ScheduleItem[] = [
     id: 's5',
     titleKey: 'schedule.items.s5.title',
     locationKey: 'schedule.items.s5.location',
-    start: '2026-08-07T14:30:00+02:00',
-    end: '2026-08-07T17:00:00+02:00',
+    start: '2026-07-08T14:30:00+02:00',
+    end: '2026-07-08T17:00:00+02:00',
   },
   {
     id: 's6',
     titleKey: 'schedule.items.s6.title',
     locationKey: 'schedule.items.s6.location',
-    start: '2026-08-07T19:30:00+02:00',
-    end: '2026-08-07T22:00:00+02:00',
+    start: '2026-07-08T19:30:00+02:00',
+    end: '2026-07-08T22:00:00+02:00',
   },
 ];
 
 export const EMERGENCY_CONTACTS: EmergencyContact[] = [
   { id: 'c1', nameKey: 'contacts.items.c1.name', roleKey: 'contacts.items.c1.role', phone: '+34600000001' },
   { id: 'c2', nameKey: 'contacts.items.c2.name', roleKey: 'contacts.items.c2.role', phone: '+34600000002' },
-  { id: 'c3', nameKey: 'contacts.items.c3.name', roleKey: 'contacts.items.c3.role', phone: '+34600000003' },
-  { id: 'c4', nameKey: 'contacts.items.c4.name', roleKey: 'contacts.items.c4.role', phone: '+34600000004' },
   { id: 'c5', nameKey: 'contacts.items.c5.name', roleKey: 'contacts.items.c5.role', phone: '112' },
 ];
