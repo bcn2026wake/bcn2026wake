@@ -42,7 +42,7 @@ export default function Login() {
     if (!id.trim()) return;
     if (config.demoMode) {
       setChannels({
-        email: { available: true, hint: 'a***@example.com' },
+        email: { available: true, hint: 'a***@gmail.com' },
         sms: { available: true, hint: '•••••••01' },
       });
       setStep('choose');
@@ -65,7 +65,7 @@ export default function Login() {
     if (cooldown > 0) return;
     setChannel(ch);
     if (config.demoMode) {
-      setCooldown(60);
+      setCooldown(30);
       setStep('otp');
       return;
     }
@@ -73,11 +73,11 @@ export default function Login() {
     setError(null);
     try {
       await startLogin(id.trim(), ch);
-      setCooldown(60);
+      setCooldown(30);
       setStep('otp');
     } catch (err) {
       if (err instanceof AuthError && err.code === 'cooldown') {
-        setCooldown(err.retryAfter ?? 60);
+        setCooldown(err.retryAfter ?? 30);
         setStep('otp');
         setError('cooldown');
       } else {

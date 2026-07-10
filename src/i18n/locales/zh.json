@@ -1,12 +1,12 @@
 {
   "app": {
-    "name": "BCN 2026 Wake",
-    "tagline": "您的活动助手"
+    "name": "BCN 2026 觉醒",
+    "tagline": "营会小助手"
   },
   "login": {
     "title": "登录",
     "idLabel": "参会者 ID",
-    "idPlaceholder": "例如 BCN-001",
+    "idPlaceholder": "例如 X0000000T",
     "passwordLabel": "密码",
     "passwordPlaceholder": "您的密码",
     "continue": "继续",
@@ -66,7 +66,15 @@
     "now": "进行中",
     "upcoming": "即将开始",
     "past": "已结束",
-    "empty": "暂无安排的活动。"
+    "empty": "暂无安排的活动。",
+    "items": {
+      "s1": { "title": "登记", "location": "主厅" },
+      "s2": { "title": "开幕", "location": "大堂" },
+      "s3": { "title": "小组时间", "location": "*" },
+      "s4": { "title": "午餐", "location": "餐厅" },
+      "s5": { "title": "工作坊 A", "location": "房间 A" },
+      "s6": { "title": "晚餐", "location": "餐厅" }
+    }
   },
   "gallery": {
     "title": "相册",
@@ -78,7 +86,26 @@
   "contacts": {
     "title": "紧急联系人",
     "call": "拨打",
-    "empty": "暂无联系人。"
+    "empty": "暂无联系人。",
+    "loadError": "无法加载联系人。",
+    "items": {
+      "c1": { "name": "活动控制室", "role": "综合协助" },
+      "c2": { "name": "医疗 / 急救", "role": "现场医护" },
+      "c3": { "name": "安保台", "role": "24 小时安保" },
+      "c4": { "name": "交通协调员", "role": "班车与出租车" },
+      "c5": { "name": "当地紧急服务", "role": "警察 / 救护车" }
+    },
+    "directory": {
+      "title": "你的联系人",
+      "leaders": "你的领队",
+      "group": "你的团队",
+      "maintainers": "后勤人员",
+      "empty": "暂无联系人。"
+    },
+    "tags": {
+      "leader": "领队",
+      "maintainer": "后勤"
+    }
   },
   "push": {
     "enable": "开启活动提醒",

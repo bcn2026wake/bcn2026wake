@@ -175,3 +175,9 @@ export function profileFromSession(session: CognitoUserSession): UserProfile {
 export function getIdToken(session: CognitoUserSession): string {
   return session.getIdToken().getJwtToken();
 }
+
+/** Returns the current valid ID token (JWT) for authorised API calls, or null. */
+export async function getCurrentIdToken(): Promise<string | null> {
+  const session = await getCurrentSession();
+  return session ? getIdToken(session) : null;
+}

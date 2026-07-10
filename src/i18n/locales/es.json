@@ -1,12 +1,12 @@
 {
   "app": {
     "name": "BCN 2026 Wake",
-    "tagline": "Tu compañero del evento"
+    "tagline": "Tu compañero del campamento"
   },
   "login": {
     "title": "Iniciar sesión",
     "idLabel": "ID de asistente",
-    "idPlaceholder": "ej. BCN-001",
+    "idPlaceholder": "ej. X0000000T",
     "passwordLabel": "Contraseña",
     "passwordPlaceholder": "Tu contraseña",
     "continue": "Continuar",
@@ -66,7 +66,15 @@
     "now": "AHORA",
     "upcoming": "Próximo",
     "past": "Hecho",
-    "empty": "Aún no hay actividades programadas."
+    "empty": "Aún no hay actividades programadas.",
+    "items": {
+      "s1": { "title": "Registro", "location": "Vestíbulo principal" },
+      "s2": { "title": "Inauguración", "location": "Auditorio" },
+      "s3": { "title": "Sesiones de grupos", "location": "*" },
+      "s4": { "title": "Almuerzo", "location": "Comedor" },
+      "s5": { "title": "Talleres", "location": "Sala A" },
+      "s6": { "title": "Cena", "location": "Comedor" }
+    }
   },
   "gallery": {
     "title": "Galería",
@@ -78,7 +86,26 @@
   "contacts": {
     "title": "Contactos de emergencia",
     "call": "Llamar",
-    "empty": "No hay contactos disponibles."
+    "empty": "No hay contactos disponibles.",
+    "loadError": "No se pudieron cargar los contactos.",
+    "items": {
+      "c1": { "name": "Sala de control del evento", "role": "Asistencia general" },
+      "c2": { "name": "Médico / Primeros auxilios", "role": "Médico en el lugar" },
+      "c3": { "name": "Mostrador de seguridad", "role": "Seguridad 24/7" },
+      "c4": { "name": "Coordinador de transporte", "role": "Autobuses y taxis" },
+      "c5": { "name": "Servicios de emergencia locales", "role": "Policía / Ambulancia" }
+    },
+    "directory": {
+      "title": "Tus contactos",
+      "leaders": "Tus líderes",
+      "group": "Tu equipo",
+      "maintainers": "Encargados",
+      "empty": "Aún no hay contactos."
+    },
+    "tags": {
+      "leader": "Líder",
+      "maintainer": "Encargado"
+    }
   },
   "push": {
     "enable": "Activar alertas del evento",

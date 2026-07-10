@@ -1,12 +1,12 @@
 {
   "app": {
     "name": "BCN 2026 Wake",
-    "tagline": "Your event companion"
+    "tagline": "Your camp companion"
   },
   "login": {
     "title": "Sign in",
     "idLabel": "Attendee ID",
-    "idPlaceholder": "e.g. BCN-001",
+    "idPlaceholder": "e.g. X0000000T",
     "passwordLabel": "Password",
     "passwordPlaceholder": "Your password",
     "continue": "Continue",
@@ -66,7 +66,15 @@
     "now": "NOW",
     "upcoming": "Upcoming",
     "past": "Done",
-    "empty": "No activities scheduled yet."
+    "empty": "No activities scheduled yet.",
+    "items": {
+      "s1": { "title": "Check-in", "location": "Main Lobby" },
+      "s2": { "title": "Opening", "location": "Auditorium" },
+      "s3": { "title": "Team Breakout Sessions", "location": "*" },
+      "s4": { "title": "Lunch", "location": "Dining Hall" },
+      "s5": { "title": "Workshops", "location": "Room A" },
+      "s6": { "title": "Dinner", "location": "Dining Hall" }
+    }
   },
   "gallery": {
     "title": "Gallery",
@@ -78,7 +86,26 @@
   "contacts": {
     "title": "Emergency contacts",
     "call": "Call",
-    "empty": "No contacts available."
+    "empty": "No contacts available.",
+    "loadError": "Could not load contacts.",
+    "items": {
+      "c1": { "name": "Event Control Room", "role": "General assistance" },
+      "c2": { "name": "Medical / First Aid", "role": "On-site medic" },
+      "c3": { "name": "Security Desk", "role": "24/7 security" },
+      "c4": { "name": "Transport Coordinator", "role": "Shuttles & taxis" },
+      "c5": { "name": "Local Emergency Services", "role": "Police / Ambulance" }
+    },
+    "directory": {
+      "title": "Your contacts",
+      "leaders": "Your leaders",
+      "group": "Your group",
+      "maintainers": "Maintainers",
+      "empty": "No contacts yet."
+    },
+    "tags": {
+      "leader": "Leader",
+      "maintainer": "Maintainer"
+    }
   },
   "push": {
     "enable": "Enable event alerts",

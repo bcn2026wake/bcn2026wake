@@ -55,12 +55,12 @@ export default function ScheduleTab() {
                 </div>
                 <div className="card" style={{ marginTop: 6 }}>
                   <strong>
-                    {item.title}
+                    {t(item.titleKey)}
                     {status === 'now' && <span className="tl-badge">{t('schedule.now')}</span>}
                   </strong>
-                  {item.location && (
+                  {item.locationKey && (
                     <div className="hint-text" style={{ marginTop: 4 }}>
-                      {item.location}
+                      {t(item.locationKey)}
                     </div>
                   )}
                 </div>

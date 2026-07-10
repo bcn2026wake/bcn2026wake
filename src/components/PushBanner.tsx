@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { requestPushPermission } from '../services/push';
+import { requestPushPermission, isPushSubscribed } from '../services/push';
 import { config } from '../config';
 
 const DISMISS_KEY = 'bcn2026_push_dismissed';
@@ -10,6 +10,13 @@ export default function PushBanner() {
   const [hidden, setHidden] = useState(
     () => !config.oneSignalAppId || localStorage.getItem(DISMISS_KEY) === '1',
   );
+
+  useEffect(() => {
+    isPushSubscribed().then((subscribed) => {
+      if (subscribed) setHidden(true);
+    });
+  }, []);
+
   if (hidden) return null;
 
   const enable = () => {

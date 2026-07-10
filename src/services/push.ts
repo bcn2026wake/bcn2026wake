@@ -30,9 +30,7 @@ export function initPush(): void {
     await OneSignal.init({
       appId: config.oneSignalAppId,
       autoResubscribe: true,
-      // OneSignal's built-in subscription bell.
-      notifyButton: { enable: true },
-      // Custom scope keeps this worker separate from the Workbox PWA sw.js.
+      notifyButton: { enable: false },
       serviceWorkerParam: { scope: '/onesignal/' },
       serviceWorkerPath: '/onesignal/OneSignalSDKWorker.js',
     });
@@ -49,6 +47,17 @@ export function identifyPushUser(attendeeId: string): void {
 export function requestPushPermission(): void {
   window.OneSignalDeferred?.push(async (OneSignal) => {
     await OneSignal.Notifications.requestPermission();
+  });
+}
+
+/** Resolves to true when the user has already granted push permission. */
+export function isPushSubscribed(): Promise<boolean> {
+  if (!config.oneSignalAppId) return Promise.resolve(false);
+  return new Promise((resolve) => {
+    window.OneSignalDeferred = window.OneSignalDeferred || [];
+    window.OneSignalDeferred.push((OneSignal) => {
+      resolve(OneSignal.Notifications.permission);
+    });
   });
 }
 
