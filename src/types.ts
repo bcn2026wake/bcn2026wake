@@ -4,7 +4,6 @@ export interface UserProfile {
   phone: string;
   churchName: string;
   teamCode: string;
-  teamName: string;
   roomNumber: string;
   leadersName: string[];
   roommatesName: string[];
@@ -44,13 +43,11 @@ export interface DirectoryPerson {
   isMaintainer?: boolean;
   /** Set on the maintainer roster so each entry shows its group. */
   teamCode?: string;
-  teamName?: string;
 }
 
 /** A group of attendees (one team), used for the maintainer view. */
 export interface DirectoryGroup {
   teamCode: string;
-  teamName: string;
   members: DirectoryPerson[];
 }
 

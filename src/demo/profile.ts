@@ -7,7 +7,6 @@ import demoData from './data.json';
  */
 const person =
   demoData.people.find((p) => p.id === demoData.selectedPersonId) ?? demoData.people[0];
-const team = demoData.camp.teams.find((t) => t.code === person.teamCode);
 
 /** Mock attendee used when the app runs in demo mode (no backend session). */
 export const DEMO_PROFILE: UserProfile = {
@@ -16,15 +15,14 @@ export const DEMO_PROFILE: UserProfile = {
   phone: person.phone,
   churchName: person.churchName,
   teamCode: person.teamCode,
-  teamName: team?.name ?? '',
   roomNumber: person.roomNumber,
   // Leaders are the team's leaders; room-mates share the room number.
-  leadersId: demoData.people
+  leadersName: demoData.people
     .filter((p) => p.id !== person.id && p.teamCode === person.teamCode && p.isLeader)
-    .map((p) => p.id),
-  roommatesId: demoData.people
+    .map((p) => p.name),
+  roommatesName: demoData.people
     .filter((p) => p.id !== person.id && p.roomNumber === person.roomNumber)
-    .map((p) => p.id),
+    .map((p) => p.name),
   isLeader: person.isLeader,
   isMaintainer: person.isMaintainer,
 };

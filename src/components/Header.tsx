@@ -10,7 +10,7 @@ export default function Header() {
     <header className="app-header">
       <div className="team-badge">
         <small>{t('header.team')}</small>
-        <strong>{profile?.teamName || '—'}</strong>
+        <strong>{profile?.teamCode ? `${t('directory.group')} ${profile.teamCode}` : '—'}</strong>
       </div>
       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
         <LanguageSelector compact />

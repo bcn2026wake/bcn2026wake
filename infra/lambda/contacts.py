@@ -140,7 +140,7 @@ def maintainer_view():
             continue
         code = item.get('team_id')
         if code not in groups:
-            groups[code] = {'teamCode': code, 'teamName': extract_numbers(code), 'members': []}
+            groups[code] = {'teamCode': code, 'members': []}
         groups[code]['members'].append(to_person(item))
         
     group_list = list(groups.values())
@@ -148,7 +148,7 @@ def maintainer_view():
         g['members'].sort(key=by_name)
         
     def natural_sort_key(g):
-        return [int(text) if text.isdigit() else text.lower() for text in re.split('([0-9]+)', g.get('teamName', ''))]
+        return [int(text) if text.isdigit() else text.lower() for text in re.split('([0-9]+)', g.get('teamCode', ''))]
         
     group_list.sort(key=natural_sort_key)
     
@@ -158,7 +158,6 @@ def maintainer_view():
             person = to_person(item)
             if has_real_team(item):
                 person['teamCode'] = item.get('team_id')
-                person['teamName'] = extract_numbers(item.get('team_id'))
             maintainers.append(person)
     maintainers.sort(key=by_name)
     

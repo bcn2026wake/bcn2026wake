@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../context/AuthContext';
 import { updatePhone } from '../../services/auth';
+import './ProfileTab.css'; // modern styles
 
 export default function ProfileTab() {
   const { t } = useTranslation();
@@ -30,7 +31,7 @@ export default function ProfileTab() {
       setIsEditingPhone(false);
     } catch (err) {
       console.error('Failed to update phone', err);
-      // Fallback: just close editing mode or show an error
+      // Fallback: close editing mode
       setIsEditingPhone(false);
     } finally {
       setSavingPhone(false);
@@ -38,89 +39,74 @@ export default function ProfileTab() {
   };
 
   return (
-    <section role="tabpanel">
-      <h2 className="tab-title">{t('profile.title')}</h2>
+    <section className="profile-tab" role="tabpanel">
+      <h2 className="tab-title" style={{ display: 'none' }}>{t('profile.title')}</h2>
+
+      <div className="profile-header-card">
+        <h3 className="profile-name">{profile.name}</h3>
+        <div>
+          {profile.isLeader && <span className="profile-role-badge">{t('profile.leader')}</span>}
+          {profile.isMaintainer && <span className="profile-role-badge">{t('profile.maintainer')}</span>}
+        </div>
+      </div>
 
       <div className="card">
-        <div className="row">
-          <span className="label">{t('profile.name')}</span>
-          <span className="value">{profile.name}</span>
-        </div>
-        <div className="row">
-          <span className="label">{t('profile.id')}</span>
-          <span className="value">{profile.id}</span>
-        </div>
-        {(profile.isLeader || profile.isMaintainer) && (
-          <div className="row">
-            <span className="label">{t('profile.role')}</span>
-            <span className="value">
-              {profile.isLeader && <span className="badge">{t('profile.leader')}</span>}
-              {profile.isMaintainer && <span className="badge">{t('profile.maintainer')}</span>}
-            </span>
-          </div>
-        )}
         <div className="row" style={{ alignItems: isEditingPhone ? 'center' : 'flex-start' }}>
           <span className="label">{t('profile.phone')}</span>
           <span className="value">
             {isEditingPhone ? (
-              <div style={{ display: 'flex', gap: '8px' }}>
+              <div className="input-wrapper">
                 <input
                   type="tel"
                   value={editedPhone}
                   onChange={(e) => setEditedPhone(e.target.value)}
                   disabled={savingPhone}
-                  className="input"
-                  style={{ padding: '4px', maxWidth: '120px' }}
+                  className="phone-input"
+                  autoFocus
                 />
                 <button 
                   onClick={handleSavePhone} 
                   disabled={savingPhone}
-                  style={{ padding: '4px 8px', cursor: 'pointer' }}
+                  className="btn-save"
                 >
                   Save
                 </button>
               </div>
             ) : (
-              <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+              <div style={{ display: 'flex', gap: '8px', alignItems: 'center', justifyContent: 'flex-end' }}>
                 <a href={`tel:${profile.phone}`}>{profile.phone}</a>
-                <button 
-                  onClick={handleEditPhone}
-                  style={{ padding: '2px 6px', fontSize: '12px', cursor: 'pointer' }}
-                >
+                <button onClick={handleEditPhone} className="btn-edit">
                   Edit
                 </button>
               </div>
             )}
           </span>
         </div>
-      </div>
-
-      <div className="card">
+        
         {profile.churchName && (
           <div className="row">
             <span className="label">{t('profile.church')}</span>
             <span className="value">{profile.churchName}</span>
           </div>
         )}
-        {profile.teamName && (
-          <div className="row">
-            <span className="label">{t('profile.team')}</span>
-            <span className="value">{profile.teamName}</span>
-          </div>
-        )}
-        {profile.teamCode && (
-          <div className="row">
-            <span className="label">{t('profile.teamCode')}</span>
-            <span className="value">{profile.teamCode}</span>
-          </div>
-        )}
-        {profile.roomNumber && (
-          <div className="row">
-            <span className="label">{t('profile.room')}</span>
-            <span className="value">{profile.roomNumber}</span>
-          </div>
-        )}
       </div>
+
+      {(profile.teamCode || profile.roomNumber) && (
+        <div className="card">
+          {profile.teamCode && (
+            <div className="row">
+              <span className="label">{t('profile.teamCode')}</span>
+              <span className="value">{profile.teamCode}</span>
+            </div>
+          )}
+          {profile.roomNumber && (
+            <div className="row">
+              <span className="label">{t('profile.room')}</span>
+              <span className="value">{profile.roomNumber}</span>
+            </div>
+          )}
+        </div>
+      )}
 
       {(profile.leadersName.length > 0 || profile.roommatesName.length > 0) && (
         <div className="card">

@@ -3,8 +3,6 @@ import demoData from './data.json';
 
 type Person = (typeof demoData.people)[number];
 
-const teamName = (code: string) =>
-  demoData.camp.teams.find((t) => t.code === code)?.name ?? '';
 
 const toPerson = (p: Person): DirectoryPerson => ({
   id: p.id,
@@ -28,12 +26,11 @@ export function demoDirectory(profile: UserProfile): ContactsDirectory {
       roommates,
       groups: demoData.camp.teams.map((t) => ({
         teamCode: t.code,
-        teamName: t.name,
         members: people.filter((p) => p.teamCode === t.code).map(toPerson),
       })),
       maintainers: people
         .filter((p) => p.isMaintainer)
-        .map((p) => ({ ...toPerson(p), teamCode: p.teamCode, teamName: teamName(p.teamCode) })),
+        .map((p) => ({ ...toPerson(p), teamCode: p.teamCode })),
     };
   }
 
