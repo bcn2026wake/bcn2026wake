@@ -7,7 +7,7 @@ import './ProfileTab.css'; // modern styles
 export default function ProfileTab() {
   const { t } = useTranslation();
   const { profile, enterWithProfile } = useAuth();
-  
+
   const [isEditingPhone, setIsEditingPhone] = useState(false);
   const [editedPhone, setEditedPhone] = useState('');
   const [savingPhone, setSavingPhone] = useState(false);
@@ -64,8 +64,8 @@ export default function ProfileTab() {
                   className="phone-input"
                   autoFocus
                 />
-                <button 
-                  onClick={handleSavePhone} 
+                <button
+                  onClick={handleSavePhone}
                   disabled={savingPhone}
                   className="btn-save"
                 >
@@ -74,15 +74,15 @@ export default function ProfileTab() {
               </div>
             ) : (
               <div style={{ display: 'flex', gap: '8px', alignItems: 'center', justifyContent: 'flex-end' }}>
-                <a href={`tel:${profile.phone}`}>{profile.phone}</a>
                 <button onClick={handleEditPhone} className="btn-edit">
                   Edit
                 </button>
+                <a href={`tel:${profile.phone}`}>{profile.phone}</a>
               </div>
             )}
           </span>
         </div>
-        
+
         {profile.churchName && (
           <div className="row">
             <span className="label">{t('profile.church')}</span>

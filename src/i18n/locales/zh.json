@@ -41,7 +41,7 @@
     "contacts": "联系"
   },
   "header": {
-    "team": "团队",
+    "team": "小组",
     "language": "语言",
     "signOut": "退出登录"
   },
@@ -52,14 +52,14 @@
     "email": "邮箱",
     "phone": "电话",
     "church": "教会",
-    "team": "团队",
-    "teamCode": "团队代码",
+    "team": "小组",
+    "teamCode": "小组ID",
     "room": "房间",
-    "leaders": "领队",
+    "leaders": "辅导",
     "roommates": "室友",
     "role": "角色",
-    "leader": "领队",
-    "maintainer": "后勤"
+    "leader": "辅导",
+    "maintainer": "策划"
   },
   "schedule": {
     "title": "日程",
@@ -110,7 +110,7 @@
     "directory": {
       "title": "联系人",
       "leaders": "辅导",
-      "group": "团队",
+      "group": "小组",
       "maintainers": "策划",
       "roommates": "室友",
       "empty": "暂无联系人。"

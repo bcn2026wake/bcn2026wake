@@ -58,7 +58,6 @@ export default function Login() {
               onChange={(e) => setId(e.target.value)}
             />
           </div>
-          <p className="hint-text">{t('login.firstTimeHint')}</p>
           {error && <p className="error-text">{errText(error) ?? t('login.genericError')}</p>}
           <button className="btn" disabled={busy || !id.trim()}>
             {busy ? t('common.loading') : t('login.continue')}
