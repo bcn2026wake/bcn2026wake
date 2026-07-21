@@ -7,7 +7,7 @@ Description: >
 
 Globals:
   Function:
-    Runtime: nodejs20.x
+    Runtime: python3.12
     Timeout: 10
     MemorySize: 256
     Architectures: [arm64]
@@ -62,7 +62,7 @@ Resources:
   LoginFn:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: login.handler
+      Handler: login.lambda_handler
       CodeUri: lambda/
       Environment:
         Variables:
@@ -83,7 +83,7 @@ Resources:
   ContactsFn:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: contacts.handler
+      Handler: contacts.lambda_handler
       CodeUri: lambda/
       Environment:
         Variables:

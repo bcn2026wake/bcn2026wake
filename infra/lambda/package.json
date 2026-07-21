@@ -1,7 +1,0 @@
-{
-  "name": "bcn2026-lambda",
-  "version": "1.0.0",
-  "type": "module",
-  "private": true,
-  "description": "REST handlers (login + contacts). AWS SDK v3 is provided by the nodejs20.x runtime, so no dependencies need to be bundled."
-}
