@@ -1,7 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { SUPPORTED_LANGUAGES } from '../i18n';
 
-/** Prominent language toggle — used on both the login page and the dashboard. */
 export default function LanguageSelector({ compact = false }: { compact?: boolean }) {
   const { i18n } = useTranslation();
 

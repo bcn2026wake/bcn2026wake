@@ -77,7 +77,7 @@ def to_profile(p):
     phone = p.get('phone')
     phone_str = str(phone) if phone is not None and phone != 0 and phone != "0" and phone != "" else ""
     
-    team_code = p.get('team_id') if has_real_team(p) else ""
+    team_code = extract_numbers(p.get('team_id')) if has_real_team(p) else ""
     room_number = extract_numbers(p.get('room_id')) if has_real_room(p) else ""
     
     leadersName = []

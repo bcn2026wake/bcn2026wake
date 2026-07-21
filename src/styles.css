@@ -623,7 +623,7 @@ a {
   color: var(--text);
   border: 1px solid var(--border-strong);
   border-radius: 999px;
-  padding: 8px 12px;
+  padding: 8px 28px 8px 16px;
   font-size: 14px;
   font-weight: 600;
   box-shadow: var(--shadow-sm);

@@ -138,7 +138,7 @@ def maintainer_view():
     for item in items:
         if not has_real_team(item):
             continue
-        code = item.get('team_id')
+        code = extract_numbers(item.get('team_id'))
         if code not in groups:
             groups[code] = {'teamCode': code, 'members': []}
         groups[code]['members'].append(to_person(item))
@@ -157,7 +157,7 @@ def maintainer_view():
         if is_maintainer_role(get_role(item)):
             person = to_person(item)
             if has_real_team(item):
-                person['teamCode'] = item.get('team_id')
+                person['teamCode'] = extract_numbers(item.get('team_id'))
             maintainers.append(person)
     maintainers.sort(key=by_name)
     
