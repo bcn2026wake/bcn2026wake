@@ -6,9 +6,8 @@ export interface UserProfile {
   teamCode: string;
   teamName: string;
   roomNumber: string;
-  /** Attendee IDs of this attendee's group leaders / room-mates. */
-  leadersId: string[];
-  roommatesId: string[];
+  leadersName: string[];
+  roommatesName: string[];
   isLeader: boolean;
   isMaintainer: boolean;
 }

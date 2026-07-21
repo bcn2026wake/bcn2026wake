@@ -23,3 +23,12 @@ export async function login(id: string): Promise<UserProfile> {
   const data = await res.json();
   return data.profile as UserProfile;
 }
+
+export async function updatePhone(id: string, phone: string): Promise<void> {
+  const res = await fetch(`${config.apiBaseUrl}/profile`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ id, phone })
+  });
+  if (!res.ok) throw new AuthError('genericError');
+}

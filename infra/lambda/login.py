@@ -81,15 +81,15 @@ def to_profile(p):
     team_name = extract_numbers(p.get('team_id')) if has_real_team(p) else ""
     room_number = extract_numbers(p.get('room_id')) if has_real_room(p) else ""
     
-    leadersId = []
+    leadersName = []
     if has_real_team(p):
         team_members = query_index('byTeam', 'team_id', p.get('team_id'))
-        leadersId = [item.get('id') for item in team_members if int(item.get('role', 0) or 0) == ROLE_LEADER]
+        leadersName = [item.get('name', '') for item in team_members if int(item.get('role', 0) or 0) == ROLE_LEADER]
         
-    roommatesId = []
+    roommatesName = []
     if has_real_room(p):
         room_members = query_index('byRoom', 'room_id', p.get('room_id'))
-        roommatesId = [item.get('id') for item in room_members if item.get('id') != p.get('id')]
+        roommatesName = [item.get('name', '') for item in room_members if item.get('id') != p.get('id')]
     
     return {
         'id': p.get('id'),
@@ -99,8 +99,8 @@ def to_profile(p):
         'teamCode': team_code,
         'teamName': team_name,
         'roomNumber': room_number,
-        'leadersId': leadersId,
-        'roommatesId': roommatesId,
+        'leadersName': leadersName,
+        'roommatesName': roommatesName,
         'isLeader': role == ROLE_LEADER,
         'isMaintainer': role == ROLE_MAINTAINER,
     }

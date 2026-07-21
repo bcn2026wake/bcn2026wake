@@ -1,27 +1,41 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../context/AuthContext';
-import { buildNameMap, fetchContactsDirectory } from '../../services/contacts';
+import { updatePhone } from '../../services/auth';
 
 export default function ProfileTab() {
   const { t } = useTranslation();
-  const { profile } = useAuth();
-  const [names, setNames] = useState<Record<string, string>>({});
-
-  useEffect(() => {
-    if (!profile) return;
-    let active = true;
-    fetchContactsDirectory(profile)
-      .then((dir) => active && setNames(buildNameMap(dir)))
-      .catch(() => {});
-    return () => {
-      active = false;
-    };
-  }, [profile]);
+  const { profile, enterWithProfile } = useAuth();
+  
+  const [isEditingPhone, setIsEditingPhone] = useState(false);
+  const [editedPhone, setEditedPhone] = useState('');
+  const [savingPhone, setSavingPhone] = useState(false);
 
   if (!profile) return null;
 
-  const nameOf = (id: string) => names[id] ?? id;
+  const handleEditPhone = () => {
+    setEditedPhone(profile.phone);
+    setIsEditingPhone(true);
+  };
+
+  const handleSavePhone = async () => {
+    if (!editedPhone.trim()) {
+      setIsEditingPhone(false);
+      return;
+    }
+    setSavingPhone(true);
+    try {
+      await updatePhone(profile.id, editedPhone.trim());
+      enterWithProfile({ ...profile, phone: editedPhone.trim() });
+      setIsEditingPhone(false);
+    } catch (err) {
+      console.error('Failed to update phone', err);
+      // Fallback: just close editing mode or show an error
+      setIsEditingPhone(false);
+    } finally {
+      setSavingPhone(false);
+    }
+  };
 
   return (
     <section role="tabpanel">
@@ -45,10 +59,38 @@ export default function ProfileTab() {
             </span>
           </div>
         )}
-        <div className="row">
+        <div className="row" style={{ alignItems: isEditingPhone ? 'center' : 'flex-start' }}>
           <span className="label">{t('profile.phone')}</span>
           <span className="value">
-            <a href={`tel:${profile.phone}`}>{profile.phone}</a>
+            {isEditingPhone ? (
+              <div style={{ display: 'flex', gap: '8px' }}>
+                <input
+                  type="tel"
+                  value={editedPhone}
+                  onChange={(e) => setEditedPhone(e.target.value)}
+                  disabled={savingPhone}
+                  className="input"
+                  style={{ padding: '4px', maxWidth: '120px' }}
+                />
+                <button 
+                  onClick={handleSavePhone} 
+                  disabled={savingPhone}
+                  style={{ padding: '4px 8px', cursor: 'pointer' }}
+                >
+                  Save
+                </button>
+              </div>
+            ) : (
+              <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                <a href={`tel:${profile.phone}`}>{profile.phone}</a>
+                <button 
+                  onClick={handleEditPhone}
+                  style={{ padding: '2px 6px', fontSize: '12px', cursor: 'pointer' }}
+                >
+                  Edit
+                </button>
+              </div>
+            )}
           </span>
         </div>
       </div>
@@ -80,18 +122,18 @@ export default function ProfileTab() {
         )}
       </div>
 
-      {(profile.leadersId.length > 0 || profile.roommatesId.length > 0) && (
+      {(profile.leadersName.length > 0 || profile.roommatesName.length > 0) && (
         <div className="card">
-          {profile.leadersId.length > 0 && (
+          {profile.leadersName.length > 0 && (
             <div className="row">
               <span className="label">{t('profile.leaders')}</span>
-              <span className="value">{profile.leadersId.map(nameOf).join(', ')}</span>
+              <span className="value">{profile.leadersName.join(', ')}</span>
             </div>
           )}
-          {profile.roommatesId.length > 0 && (
+          {profile.roommatesName.length > 0 && (
             <div className="row">
               <span className="label">{t('profile.roommates')}</span>
-              <span className="value">{profile.roommatesId.map(nameOf).join(', ')}</span>
+              <span className="value">{profile.roommatesName.join(', ')}</span>
             </div>
           )}
         </div>

@@ -111,6 +111,29 @@ Resources:
             Path: /contacts
             Method: get
 
+  UpdateProfileFn:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: update_profile.lambda_handler
+      CodeUri: lambda/
+      Environment:
+        Variables:
+          ATTENDEES_TABLE: !Ref ParticipantsTable
+      Policies:
+        - Statement:
+            - Effect: Allow
+              Action:
+                - dynamodb:UpdateItem
+              Resource:
+                - !GetAtt ParticipantsTable.Arn
+      Events:
+        UpdateProfile:
+          Type: Api
+          Properties:
+            RestApiId: !Ref Api
+            Path: /profile
+            Method: put
+
 Outputs:
   ApiBaseUrl:
     Value: !Sub 'https://${Api}.execute-api.${AWS::Region}.amazonaws.com/prod'
