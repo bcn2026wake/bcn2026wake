@@ -70,8 +70,12 @@ Resources:
       Policies:
         - Statement:
             - Effect: Allow
-              Action: [dynamodb:GetItem]
-              Resource: !GetAtt ParticipantsTable.Arn
+              Action:
+                - dynamodb:GetItem
+                - dynamodb:Query
+              Resource:
+                - !GetAtt ParticipantsTable.Arn
+                - !Sub '${ParticipantsTable.Arn}/index/*'
       Events:
         Login:
           Type: Api
